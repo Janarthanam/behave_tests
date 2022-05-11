@@ -5,6 +5,7 @@ import requests
 import sys
 import os
 import json
+import urllib.parse
 
 def login(host: str, user: str, password: str) -> None:
     session = requests.session()
@@ -41,37 +42,37 @@ def session_orgs(session: requests.Session, host: str) -> dict:
     return response.json()
 
 def switch_org(session: requests.Session, host: str, orgId: int):
-    post_data = {"orgId" : orgId}
-    response = session.post(f"{host}/callosum/v1/session/orgs", data = post_data)
+    post_data = {"org" : orgId}
+    response = session.put(f"{host}/callosum/v1/session/orgs", data = post_data)
+    print(response.text)
     response.raise_for_status()
     return response
 
 def create_user(session, host: str, username: str, orgId: int = None):
     post_data = {'name' : username, 'password': "Whatever123", 'orgid': orgId, 'displayname': username}
     response = session.post(f"{host}/callosum/v1/session/user/create", data = post_data)
-    print(json.dumps(response.json(), indent=3))
+    #print(json.dumps(response.json(), indent=3))
     response.raise_for_status()
     return response.json()
 
 def get_user(session, host: str, username: str):
     get_params = {'name' : username}
-    response = session.post(f"{host}/callosum/v1/tspublic/v1/user", params = get_params)
-    print(f"get user {username}")
+    response = session.get(f"{host}/callosum/v1/tspublic/v1/user", params = get_params)
     response.raise_for_status()
     return response.json()
 
 def update_user(session, host: str, user, orgIds: list[int] = [], groups: list[str] = []):
     if len(orgIds) > 0 :
-        user["userContent"]["header"]["orgIds"] = orgIds
+        user["header"]["orgIds"] = orgIds
 
     if len(groups) > 0:
         user["assignedGroups"] = groups
     
-    update_body = {"userid" : user["header"]["id"], "content": user["userContent"]}
-    respone = session.post(f"{host}/callosum/v1/tspublic/v1/user", body = update_body)
-    print(response)
-    print(response.requests)
-    return response.json()
+    update_body = {"content": str(user)}
+    print(update_body)
+    response = session.post(f"{host}/callosum/v1/tspublic/v1/user/{user['header']['id']}", data = update_body)
+    response.raise_for_status()
+    return response
 
 def delete_user(session, host: str, user_id: str, orgId: int = None):
     params = {'orgid' : orgId}
