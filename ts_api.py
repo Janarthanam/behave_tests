@@ -42,8 +42,8 @@ def session_orgs(session: requests.Session, host: str) -> dict:
     return response.json()
 
 def switch_org(session: requests.Session, host: str, orgId: int):
-    post_data = {"org" : orgId}
-    response = session.put(f"{host}/callosum/v1/session/orgs", data = post_data)
+    put_data = {"org" : orgId}
+    response = session.put(f"{host}/callosum/v1/session/orgs", data = put_data)
     print(response.text)
     response.raise_for_status()
     return response
