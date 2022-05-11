@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import os
-from ts_api import create_user
-from ts_api import login
+from ts_api import *
 
 def main(host: str, user: str, count: int):
     session = login(host, 'tsadmin', 'admin')

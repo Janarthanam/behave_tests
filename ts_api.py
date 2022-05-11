@@ -44,14 +44,13 @@ def session_orgs(session: requests.Session, host: str) -> dict:
 def switch_org(session: requests.Session, host: str, orgId: int):
     put_data = {"org" : orgId}
     response = session.put(f"{host}/callosum/v1/session/orgs", data = put_data)
-    print(response.text)
     response.raise_for_status()
     return response
 
 def create_user(session, host: str, username: str, orgId: int = None):
     post_data = {'name' : username, 'password': "Whatever123", 'orgid': orgId, 'displayname': username}
     response = session.post(f"{host}/callosum/v1/session/user/create", data = post_data)
-    #print(json.dumps(response.json(), indent=3))
+    print(json.dumps(response.json(), indent=3))
     response.raise_for_status()
     return response.json()
 
@@ -68,9 +67,10 @@ def update_user(session, host: str, user, orgIds: list[int] = [], groups: list[s
     if len(groups) > 0:
         user["assignedGroups"] = groups
     
-    update_body = {"content": str(user)}
+    update_body = {"userid": f"{user['header']['id']}", "content": json.dumps(user)}
     print(update_body)
-    response = session.post(f"{host}/callosum/v1/tspublic/v1/user/{user['header']['id']}", data = update_body)
+    response = session.post(f"{host}/callosum/v1/session/user/update", data = update_body)
+    print(response.text)
     response.raise_for_status()
     return response
 
