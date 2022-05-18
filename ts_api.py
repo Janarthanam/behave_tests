@@ -38,6 +38,7 @@ def session_info(session, host: str) -> dict:
 
 def session_orgs(session: requests.Session, host: str) -> dict:
     response = session.get(f"{host}/callosum/v1/session/orgs")
+    print(response.text)
     response.raise_for_status()
     return response.json()
 
@@ -47,10 +48,10 @@ def switch_org(session: requests.Session, host: str, orgId: int):
     response.raise_for_status()
     return response
 
-def create_user(session, host: str, username: str, orgId: int = None):
-    post_data = {'name' : username, 'password': "Whatever123", 'orgid': orgId, 'displayname': username}
+def create_user(session, host: str, username: str, orgId: int = None, groups: list[str] = None):
+    post_data = {'name' : username, 'password': "Whatever123!@", 'orgid': orgId, 'displayname': username, 'groups': groups}
     response = session.post(f"{host}/callosum/v1/session/user/create", data = post_data)
-    print(json.dumps(response.json(), indent=3))
+    #print(json.dumps(response.json(), indent=3))
     response.raise_for_status()
     return response.json()
 
@@ -68,7 +69,7 @@ def update_user(session, host: str, user, orgIds: list[int] = [], groups: list[s
         user["assignedGroups"] = groups
     
     update_body = {"userid": f"{user['header']['id']}", "content": json.dumps(user)}
-    print(update_body)
+    #print(update_body)
     response = session.post(f"{host}/callosum/v1/session/user/update", data = update_body)
     print(response.text)
     response.raise_for_status()
@@ -77,14 +78,28 @@ def update_user(session, host: str, user, orgIds: list[int] = [], groups: list[s
 def delete_user(session, host: str, user_id: str, orgId: int = None):
     params = {'orgid' : orgId}
     response = session.delete(f"{host}/callosum/v1/session/user/delete/{user_id}", params = params)
-    print(response.request.body)
+    #print(response.request.body)
     response.raise_for_status()
     return response
 
 def list_user_group(session, host: str, userId: str):
     response = session.get(f"{host}/callosum/v1/session/user/listgroup/{userId}")
-    print(json.dumps(response.json(), indent=3))
+    #print(json.dumps(response.json(), indent=3))
     response.raise_for_status()
+    return [x['header']['name'] for x in response.json()]
+
+def get_users_in_group(session, host:str, groupId: str):
+    response = session.get(f"{host}/callosum/v1/session/group/listuser/{groupId}")
+    #print(json.dumps(response.json(), indent=3))
+    response.raise_for_status()
+    return [x['header']['name'] for x in response.json()]
+
+def add_user_to_group(session, host: str, userId: str, group: str):
+    post_data = {"userid": userId, "groupid": group}
+    response = session.post(f"{host}/callosum/v1/session/group/adduser", data = post_data)
+    #print(response.text)
+    response.raise_for_status()
+    return response
 
 def session_org_info(session, host: str):
     response = session.get(f"{host}/callosum/v1/session/orgs")
@@ -99,8 +114,9 @@ class Orgs:
     def create_org(self, name: str, description: str) -> dict:
         post_data = {'name': name, 'description': description}
         response = self.session.post(f"{self.host}/callosum/v1/org/create", data = post_data)
-        print(json.dumps(response.json(), indent = 3))
-        print(response.request.body)
+        print(response.text)
+        #print(json.dumps(response.json(), indent = 3))
+        #print(response.request.body)
         response.raise_for_status()
         return response.json()
 
