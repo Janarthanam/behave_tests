@@ -11,7 +11,7 @@ def login(host: str, user: str, password: str) -> None:
     session = requests.session()
     post_data = {'username': user, 'password': password, 'rememberme' : True}
     response = session.post(f"{host}/callosum/v1/session/login", data = post_data)
-    #print(response.request.body)
+    print(json.dumps(response.json(), indent=3))
     response.raise_for_status()
     return session
 

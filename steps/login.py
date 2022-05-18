@@ -6,7 +6,7 @@ from common import *
 @given("A tenant admin user")
 @given("I am a tenant admin")
 def login_as_admin(context):
-    context.session = login(host=get_host(context),user="tsadmin",password="admin")
+    context.session = login(host=get_host(context),user="tsadmin",password=get_password(context))
     switch_org(context.session, host=get_host(context), orgId=-1)
 
 

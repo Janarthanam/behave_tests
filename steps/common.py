@@ -8,3 +8,6 @@ def get_relative_orgId(context, orgNo:int) -> int:
 
 def get_host(context)->str:
     return context.config.userdata.get("target")
+
+def get_password(context)->str:
+    return context.config.userdata.get("passwd")
