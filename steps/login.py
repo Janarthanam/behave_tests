@@ -14,15 +14,23 @@ def login_as_admin(context):
 @given('I switch to org {org}')
 def org_admin(context, org):
     print(f"{org} number of orgs. {len(context.orgs)}")
-    switch_org(context.session, host=get_host(context), orgId=get_relative_orgId(context, org))
+    switch_org(context.session, host=get_host(context), orgId=get_relative_org_id(context, org))
 
 @when('I try to login using {tokenRef} token in to "{username}"')
 def login_using_token(context, tokenRef, username):
     context.session = login_as_user(host=get_host(context), user=username, token=context.token, redirect_host=get_host(context))
 
+@preserve_exception
 @Then('I get an user token for "{username}" using secret in org {org}')
-def generate_token(context, username, org: int):
-    context.token = get_auth_token(host=get_host(context), user=username, secret_key=context.config.userdata.get("secret"), orgId=get_relative_orgId(context,org))
+@Then('I get an user token for {userRef} using secret')
+def generate_token(context, username=None, userRef=None, org: int = None):
+    if username is None:
+        if not userRef is None:
+            username = get_user_from_context(context, userRef)['header']['name']
+        else:
+            raise "In sufficient context"
+    
+    context.token = get_auth_token(host=get_host(context), user=username, secret_key=context.config.userdata.get("secret"), orgId=get_relative_org_id(context,org))
 
 
 @Then('I should be logged in to org {org}')

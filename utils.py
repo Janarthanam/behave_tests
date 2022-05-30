@@ -1,12 +1,22 @@
 import uuid
-from requests import HTTPError
+from requests import *
+import requests
 
 def random_str() -> str:
     return uuid.uuid4().hex
 
-def expect_requests(func):
-    def wrapper(*args, **kwargs):
+def log_raise_for_status(response: requests.Response):
+    try:
+        response.raise_for_status()
+    except HTTPError as e:
+        print(response.request.body)
+        print(response.text)
+        raise e
+
+def preserve_exception(func):
+    def wrapper(context, *args, **kwargs):
         try:
-            resp = func(*args, **kwargs)
+            resp = func(context, *args, **kwargs)
         except HTTPError as e:
-            args[0].error = e
+            context.error = e
+    return wrapper
