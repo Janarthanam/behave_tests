@@ -62,7 +62,6 @@ Scenario: Create user in org retains groups and orgs correctly
         | groups | orgs |
         | "above"| 1    |
 
-
 Scenario: Create user in org as org admin
   Given I am a tenant admin
   When The tenant has 2 orgs
@@ -76,9 +75,6 @@ Scenario: Create user in org as org admin
     | groups | orgs |
     | "above" | 1   |
 
-
-
-
 Scenario: Update user api can add and remove user org association
     Given I am a tenant admin
     When The tenant has 2 orgs
@@ -88,5 +84,10 @@ Scenario: Update user api can add and remove user org association
         | 1 |
         | 2 |
     Given I am an org admin for org 1
+    Then I add a group to the org 1
+    When I update the user above to group above
+    Then the user belongs to group
+        | groups | orgs |
+        | "above" | 1     |
     Then remove the user from org 1
     Then I get an error 403
