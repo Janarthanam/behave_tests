@@ -14,7 +14,8 @@ Scenario: generate a token for an org
     When I try to login using that token in to "tsadmin"
     Then I should be logged in to org 2
 
-Scenario Outline: generate token for inactive user
+#todo
+Scenario Outline: generate token for user in various states
     Given I am a tenant admin
     When I add an user
     Then I change user above to state "<state>"

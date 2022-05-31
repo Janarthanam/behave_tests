@@ -1,5 +1,4 @@
 import behave
-from more_itertools import groupby_transform
 
 def get_user_from_context(context, userRef):
     return context.users[int(userRef)] if (isinstance(userRef, int)) else context.users[-1]
