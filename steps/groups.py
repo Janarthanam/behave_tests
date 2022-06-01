@@ -29,5 +29,5 @@ def add_user_to_group_step(context, userRef, groupRef):
     user = get_user_from_context(context, userRef)
     group = get_group_from_context(context, groupRef)
     context.response = add_user_to_group(session=context.session, host=context.config.userdata.get(
-            "target"), userId=user['header']['id'], group = get_group_from_context(context, groupRef)['header']['id'])
+            "target"), userId=user['header']['id'], group = group['header']['id'])
 

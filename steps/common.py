@@ -28,6 +28,11 @@ def get_users(context)->list:
         context.users=[] 
     return context.users
 
+#useful when switching orgs
+def update_user_in_context(context, userRef, user):
+    ref = [int(userRef)] if (isinstance(userRef, int)) else -1
+    context.users[ref] = user
+
 def get_groups(context)->list:
     if not "groups" in context:
         context.groups=[]

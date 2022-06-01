@@ -53,7 +53,7 @@ def switch_org(session: requests.Session, host: str, orgId: int):
 def create_user(session, host: str, username: str, orgId: int = None, groups: list[str] = None):
     post_data = {'name' : username, 'password': "Whatever123!@", 'orgid': orgId, 'displayname': username, 'groups': json.dumps(groups)}
     response = session.post(f"{host}/callosum/v1/session/user/create", data = post_data)
-    #print(json.dumps(response.json(), indent=3))
+    print(post_data)
     log_raise_for_status(response)
     return response.json()
 
@@ -68,10 +68,10 @@ def update_user(session, host: str, user, orgIds: list[int] = [], groups: list[s
         user["header"]["orgIds"] = orgIds
 
     if (not groups is None) and len(groups) > 0:
-        user["assignedGroups"] = groups
+        user["assignedGroups"].extend(groups)
     
     update_body = {"userid": f"{user['header']['id']}", "content": json.dumps(user)}
-    print(update_body)
+    print(f"user update: {update_body}")
     response = session.post(f"{host}/callosum/v1/session/user/update", data = update_body)
     print(response.text)
     log_raise_for_status(response)
@@ -99,7 +99,7 @@ def get_users_in_group(session, host:str, groupId: str):
 def add_user_to_group(session, host: str, userId: str, group: str):
     post_data = {"userid": userId, "groupid": group}
     response = session.post(f"{host}/callosum/v1/session/group/adduser", data = post_data)
-    #print(response.text)
+    print(post_data)
     log_raise_for_status(response)
     return response
 

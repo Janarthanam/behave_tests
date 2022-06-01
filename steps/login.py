@@ -15,6 +15,7 @@ def login_as_admin(context):
 def org_admin(context, org):
     print(f"{org} number of orgs. {len(context.orgs)}")
     switch_org(context.session, host=get_host(context), orgId=get_relative_org_id(context, org))
+    session_orgs(context.session, host=get_host(context))
 
 @when('I try to login using {tokenRef} token in to "{username}"')
 def login_using_token(context, tokenRef, username):
