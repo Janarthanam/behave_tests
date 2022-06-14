@@ -13,9 +13,9 @@ def login(host: str, user: str, password: str) -> None:
     session = requests.session()
     post_data = {'username': user, 'password': password, 'rememberme' : True}
     response = session.post(f"{host}/callosum/v1/session/login", data = post_data)
-    #print(json.dumps(response.json(), indent=3))
+    print(json.dumps(response.json(), indent=3))
     log_raise_for_status(response)
-    return session
+    return (session, response.json())
 
 def get_auth_token(host: str, user: str, secret_key: str, orgId: int = None) -> str: 
     post_data = {'secret_key': secret_key, 'username': user, 'access_level': 'FULL', 'orgid': orgId}

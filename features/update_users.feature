@@ -141,4 +141,3 @@ Scenario: Update user api can only be used add groups for org admin.
         | orgs |groups|
         | 1    | "above"|
         | 2    | "above" |
-    

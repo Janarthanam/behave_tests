@@ -5,6 +5,7 @@ import json
 
 def main(host: str, user: str, password: str=None, secret: str = None):
     session = login(host, user, password)
+    switch_org(session, host=host, orgId=-1)
     #print(json.dumps(info, indent=3))
 
     orgs = Orgs(session, host)
