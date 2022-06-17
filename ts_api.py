@@ -13,7 +13,6 @@ def login(host: str, user: str, password: str) -> None:
     session = requests.session()
     post_data = {'username': user, 'password': password, 'rememberme' : True}
     response = session.post(f"{host}/callosum/v1/session/login", data = post_data)
-    print(json.dumps(response.json(), indent=3))
     log_raise_for_status(response)
     return (session, response.json())
 
@@ -40,7 +39,7 @@ def session_info(session, host: str) -> dict:
 
 def session_orgs(session: requests.Session, host: str) -> dict:
     response = session.get(f"{host}/callosum/v1/session/orgs")
-    print(response.text)
+    #print(response.text)
     log_raise_for_status(response)
     return response.json()
 
@@ -128,7 +127,8 @@ def get_api_doc(session, host: str):
 
 def create_group(session, host:str, name: str, org_id: int):
     post_body = {'name': name, 'display_name': name, 'orgid': org_id }
-    return _session_calls(lambda: session.post(f"{host}/callosum/v1/session/group/create", data = post_body))
+    response = session.post(f"{host}/callosum/v1/session/group/create", data = post_body)
+    log_raise_for_status(response)
 
 def _session_calls(f) -> requests.Response:
     try:
