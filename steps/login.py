@@ -1,12 +1,12 @@
-from create_user_in_org import login_using_secret
-from ts_api import *
+import ts_api as api
 from utils import *
 from common import *
+
 
 @given("A tenant admin user")
 @given("I am a tenant admin")
 def login_as_admin(context):
-    (context.session, context.response) = login(host=get_host(context),user="tsadmin",password=get_password(context))
+    (context.session, context.response) = api.login(host=get_host(context),user="tsadmin",password=get_password(context))
     switch_org(context.session, host=get_host(context), orgId=-1)
 
 @given('I login as "{user}" with password as "{password}"')

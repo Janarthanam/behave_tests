@@ -24,7 +24,7 @@ Scenario Outline: generate token for user in various states
     Then I get an error <code>
     Examples: state
         |   state | code |
-        | INACTIVE| 200 |
-#        | LOCKED  | 403 |
-#        | EXPIRED | 200 |
-#        | ACTIVE  | 200 |
+        #| INACTIVE| 200 |
+        | LOCKED  | 403 |
+        #| EXPIRED | 200 |
+        #| ACTIVE  | 200 |

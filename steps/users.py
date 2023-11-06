@@ -101,13 +101,24 @@ def user_belongs_to_group(context, userRef):
 
 @then('I change user {userRef} to state "{state}"')
 def change_user_state(context, userRef, state):
-    user = get_user_from_context(context, userRef)
-    user["state"] = state
-    update_user(
-        session = context.session,
-        host = context.config.userdata.get("target"),
-        user = user
-    )
+    #locked state cannot be set. it should be forced.
+    if state == "LOCKED":
+        user = get_user_from_context(context=context, userRef=userRef)
+        for i in range(1,20):
+            try:
+                login(host = context.config.userdata.get("target"),user=user['header']['name'],password="WrongPassword")
+            except HTTPError as e:
+                assert e.response.status_code == 401
+                return
+        assert False
+    else:
+        user = get_user_from_context(context, userRef)
+        user["state"] = state
+        update_user(
+            session = context.session,
+            host = context.config.userdata.get("target"),
+            user = user
+        )
 
 @then('I check for user {userRef} state is "{state}"')
 def check_user_state(context, userRef, state):
@@ -122,6 +133,7 @@ def check_user_state(context, userRef, state):
         user = user
     )
 
+    print(user)
     if not user['state'] == state:
         print(user)
         assert False

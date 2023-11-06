@@ -130,16 +130,6 @@ def create_group(session, host:str, name: str, org_id: int):
     response = session.post(f"{host}/callosum/v1/session/group/create", data = post_body)
     log_raise_for_status(response)
 
-def _session_calls(f) -> requests.Response:
-    try:
-        response = f()
-    except HTTPError as ex:
-        print(response.text)
-        raise ex
-    return response.json()
-
-
-
 class Orgs:
     def __init__(self, session: requests.Session, host: str):
         self.session = session
